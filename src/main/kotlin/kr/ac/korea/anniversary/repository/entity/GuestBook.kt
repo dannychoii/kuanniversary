@@ -1,13 +1,12 @@
 package kr.ac.korea.anniversary.repository.entity
 
-import java.time.LocalDateTime.now
-import java.time.ZoneOffset
+import kr.ac.korea.anniversary.helper.TimeHelper
 
 class GuestBook(
     val id: Long?,
     val head: String?,
     val content: String?,
-    val isVisible: Boolean = false,
-    val createdAt: Long = now().toEpochSecond(ZoneOffset.of("KST")),
-    val updatedAt: Long = now().toEpochSecond(ZoneOffset.of("KST")),
+    val isConfirmed: Boolean = false,
+    val createdAt: Long = TimeHelper.nowKstTimeStamp(),
+    val updatedAt: Long = TimeHelper.nowKstTimeStamp(),
 )

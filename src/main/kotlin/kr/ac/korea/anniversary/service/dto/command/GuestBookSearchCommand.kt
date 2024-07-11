@@ -4,6 +4,7 @@ import kr.ac.korea.anniversary.global.CustomException
 import org.springframework.http.HttpStatus
 
 data class GuestBookSearchCommand(
+    val isConfirmed: Boolean,
     val fromTs: Long?,
     val toTs: Long?,
 ) {

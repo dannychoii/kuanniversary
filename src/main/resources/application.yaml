@@ -2,7 +2,13 @@ spring:
   application:
     name: anniversary
   datasource:
-    url:
-    username:
-    password:
-    driver-class-name: com.mysql.cj.jdbc.Driver
+    hikari:
+      jdbc-url:
+      username:
+      password:
+      driverClassName: com.mysql.cj.jdbc.Driver
+
+logging:
+  level:
+    root: DEBUG
+

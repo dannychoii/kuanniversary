@@ -3,6 +3,7 @@ package kr.ac.korea.anniversary.controller
 import io.swagger.v3.oas.annotations.Parameter
 import io.swagger.v3.oas.annotations.tags.Tag
 import kr.ac.korea.anniversary.controller.dto.request.GuestBookCreateRequest
+import kr.ac.korea.anniversary.controller.dto.request.GuestBookUpdateRequest
 import kr.ac.korea.anniversary.controller.dto.response.GuestBookPageResponse
 import kr.ac.korea.anniversary.repository.entity.GuestBook
 import kr.ac.korea.anniversary.service.GuestBookService
@@ -24,6 +25,8 @@ class GuestBookController(
 
     @GetMapping("api/v1/guest-book")
     fun getGuestBook(
+        @Parameter(description = "승인받은 방명록 글만 볼 것인지, default = true", example = "1720618920")
+        @RequestParam isConfirmed: Boolean?,
         @Parameter(description = "초 단위의 timestamp", example = "1720618920")
         @RequestParam fromTs: Long?,
         @Parameter(description = "초 단위의 timestamp", example = "1720618920")
@@ -37,7 +40,7 @@ class GuestBookController(
     ): GuestBookPageResponse {
         val (elements, totalCount) =
             service.search(
-                GuestBookSearchCommand(fromTs, toTs),
+                GuestBookSearchCommand(isConfirmed ?: true, fromTs, toTs),
                 GuestBookPageCommand(page ?: 0, pageSize ?: 20, isDesc ?: true),
             )
         return GuestBookPageResponse(
@@ -47,6 +50,15 @@ class GuestBookController(
             totalCount = totalCount,
         )
     }
+
+    @PatchMapping("api/v1/guest-book/{id}")
+    fun updateGuestBookVisibility(
+        @PathVariable id: Long,
+        @RequestBody request: GuestBookUpdateRequest
+    ): GuestBook? {
+        return service.updateConfirm(id, request.isConfirmed)
+    }
+
 
     @PostMapping("api/v1/guest-book")
     fun createGuestBook(
