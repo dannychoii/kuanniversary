@@ -5,7 +5,6 @@ import kr.ac.korea.anniversary.helper.TimeHelper
 import kr.ac.korea.anniversary.repository.entity.GuestBook
 import kr.ac.korea.anniversary.service.dto.command.GuestBookPageCommand
 import kr.ac.korea.anniversary.service.dto.command.GuestBookSearchCommand
-import org.springframework.dao.EmptyResultDataAccessException
 import org.springframework.dao.support.DataAccessUtils
 import org.springframework.http.HttpStatus
 import org.springframework.jdbc.core.JdbcTemplate
@@ -26,9 +25,10 @@ class GuestBookRepository(
                     rs.getLong(1),
                     rs.getString(2),
                     rs.getString(3),
-                    rs.getBoolean(4),
-                    rs.getLong(5),
-                    rs.getLong(6)
+                    rs.getString(4),
+                    rs.getBoolean(5),
+                    rs.getLong(6),
+                    rs.getLong(7)
                 )
             }, id)
         )
@@ -43,15 +43,16 @@ class GuestBookRepository(
 
         val totalCount = jdbcTemplate.query(countSql, preparedStatement) { rs, _ -> rs.getLong(1) }.first()
         val resultList = jdbcTemplate.query(sql, preparedStatement) { rs, _ ->
-                GuestBook(
-                    rs.getLong(1),
-                    rs.getString(2),
-                    rs.getString(3),
-                    rs.getBoolean(4),
-                    rs.getLong(5),
-                    rs.getLong(6)
-                )
-            }
+            GuestBook(
+                rs.getLong(1),
+                rs.getString(2),
+                rs.getString(3),
+                rs.getString(4),
+                rs.getBoolean(5),
+                rs.getLong(6),
+                rs.getLong(7)
+            )
+        }
 
         return Pair(resultList, totalCount)
     }
@@ -83,13 +84,14 @@ class GuestBookRepository(
         val params = HashMap<String, Any?>()
         params["head"] = guestBook.head
         params["content"] = guestBook.content
+        params["writer"] = guestBook.writer
         params["is_confirmed"] = guestBook.isConfirmed
         params["created_at"] = guestBook.createdAt
         params["updated_at"] = guestBook.updatedAt
 
         val id = SimpleJdbcInsert(jdbcTemplate)
             .withTableName("guest_book")
-            .usingColumns("head", "content", "is_confirmed", "created_at", "updated_at")
+            .usingColumns("head", "content", "writer", "is_confirmed", "created_at", "updated_at")
             .usingGeneratedKeyColumns("id")
             .executeAndReturnKey(params)
         return this.findById(id.toLong())

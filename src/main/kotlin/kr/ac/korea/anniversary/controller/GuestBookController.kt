@@ -69,6 +69,7 @@ class GuestBookController(
                 id = null,
                 head = request.head,
                 content = request.content,
+                writer = request.writer
             ),
         )
     }
