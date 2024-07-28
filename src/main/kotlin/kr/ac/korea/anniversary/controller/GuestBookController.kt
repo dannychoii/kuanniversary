@@ -5,9 +5,9 @@ import io.swagger.v3.oas.annotations.tags.Tag
 import kr.ac.korea.anniversary.controller.dto.request.GuestBookCreateRequest
 import kr.ac.korea.anniversary.controller.dto.request.GuestBookUpdateRequest
 import kr.ac.korea.anniversary.controller.dto.response.GuestBookPageResponse
+import kr.ac.korea.anniversary.global.PageCommand
 import kr.ac.korea.anniversary.repository.entity.GuestBook
 import kr.ac.korea.anniversary.service.GuestBookService
-import kr.ac.korea.anniversary.service.dto.command.GuestBookPageCommand
 import kr.ac.korea.anniversary.service.dto.command.GuestBookSearchCommand
 import org.springframework.web.bind.annotation.*
 
@@ -41,7 +41,7 @@ class GuestBookController(
         val (elements, totalCount) =
             service.search(
                 GuestBookSearchCommand(isConfirmed ?: true, fromTs, toTs),
-                GuestBookPageCommand(page ?: 0, pageSize ?: 20, isDesc ?: true),
+                PageCommand(page ?: 0, pageSize ?: 20, isDesc ?: true),
             )
         return GuestBookPageResponse(
             guestBooks = elements,
@@ -54,11 +54,10 @@ class GuestBookController(
     @PatchMapping("api/v1/guest-book/{id}")
     fun updateGuestBookVisibility(
         @PathVariable id: Long,
-        @RequestBody request: GuestBookUpdateRequest
+        @RequestBody request: GuestBookUpdateRequest,
     ): GuestBook? {
         return service.updateConfirm(id, request.isConfirmed)
     }
-
 
     @PostMapping("api/v1/guest-book")
     fun createGuestBook(
@@ -69,7 +68,7 @@ class GuestBookController(
                 id = null,
                 head = request.head,
                 content = request.content,
-                writer = request.writer
+                writer = request.writer,
             ),
         )
     }

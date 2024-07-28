@@ -4,5 +4,5 @@ import java.time.LocalDateTime.now
 import java.time.ZoneOffset
 
 object TimeHelper {
-    fun nowKstTimeStamp():Long = now().toEpochSecond(ZoneOffset.of("+09:00"))
+    fun nowKstTimeStamp(): Long = now().toEpochSecond(ZoneOffset.of("+09:00"))
 }

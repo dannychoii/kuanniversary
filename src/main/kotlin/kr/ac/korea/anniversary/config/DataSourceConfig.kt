@@ -10,15 +10,14 @@ import javax.sql.DataSource
 
 @Configuration
 class DataSourceConfig {
-
     @Bean
     @ConfigurationProperties("spring.datasource.hikari")
-    fun datasource():DataSource{
-    return DataSourceBuilder.create().type(HikariDataSource::class.java).build()
+    fun datasource(): DataSource  {
+        return DataSourceBuilder.create().type(HikariDataSource::class.java).build()
     }
 
     @Bean
-    fun jdbcTemplate(): JdbcTemplate{
+    fun jdbcTemplate(): JdbcTemplate  {
         return JdbcTemplate(datasource())
     }
 }

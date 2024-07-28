@@ -1,8 +1,8 @@
 package kr.ac.korea.anniversary.service
 
+import kr.ac.korea.anniversary.global.PageCommand
 import kr.ac.korea.anniversary.repository.GuestBookRepository
 import kr.ac.korea.anniversary.repository.entity.GuestBook
-import kr.ac.korea.anniversary.service.dto.command.GuestBookPageCommand
 import kr.ac.korea.anniversary.service.dto.command.GuestBookSearchCommand
 import org.springframework.stereotype.Service
 
@@ -14,14 +14,17 @@ class GuestBookService(
         return repository.findById(id)
     }
 
-    fun updateConfirm(id: Long, isConfirmed: Boolean): GuestBook? {
+    fun updateConfirm(
+        id: Long,
+        isConfirmed: Boolean,
+    ): GuestBook? {
         repository.updateConfirm(id, isConfirmed)
         return repository.findById(id)
     }
 
     fun search(
         command: GuestBookSearchCommand,
-        pageCommand: GuestBookPageCommand,
+        pageCommand: PageCommand,
     ): Pair<List<GuestBook>, Long> {
         return repository.search(command, pageCommand)
     }

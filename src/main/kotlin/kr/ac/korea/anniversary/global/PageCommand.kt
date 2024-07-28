@@ -1,9 +1,8 @@
-package kr.ac.korea.anniversary.service.dto.command
+package kr.ac.korea.anniversary.global
 
-import kr.ac.korea.anniversary.global.CustomException
 import org.springframework.http.HttpStatus
 
-data class GuestBookPageCommand(
+data class PageCommand(
     val page: Long,
     val pageSize: Long,
     val isDesc: Boolean,
