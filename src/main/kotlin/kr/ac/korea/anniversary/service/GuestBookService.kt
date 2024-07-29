@@ -14,6 +14,10 @@ class GuestBookService(
         return repository.findById(id)
     }
 
+    fun findByIdAndIsConfirmed(id: Long, isConfirmed: Boolean): GuestBook? {
+        return repository.findByIdAndIsConfirmed(id, isConfirmed)
+    }
+
     fun updateConfirm(
         id: Long,
         isConfirmed: Boolean,

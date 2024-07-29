@@ -34,6 +34,24 @@ class GuestBookRepository(
         )
     }
 
+    fun findByIdAndIsConfirmed(id: Long, isConfirmed: Boolean): GuestBook? {
+        //language=sql
+        val sql = "SELECT id, head, content, is_confirmed, created_at, updated_at\nFROM guest_book\nWHERE id = ? AND is_confirmed = ?"
+        return DataAccessUtils.singleResult(
+            jdbcTemplate.query(sql, { rs, _ ->
+                GuestBook(
+                    rs.getLong(1),
+                    rs.getString(2),
+                    rs.getString(3),
+                    rs.getString(4),
+                    rs.getBoolean(5),
+                    rs.getLong(6),
+                    rs.getLong(7),
+                )
+            }, id),
+        )
+    }
+
     fun search(
         command: GuestBookSearchCommand,
         pageCommand: PageCommand,
