@@ -2,7 +2,6 @@ package kr.ac.korea.anniversary.controller
 
 import io.swagger.v3.oas.annotations.Parameter
 import io.swagger.v3.oas.annotations.tags.Tag
-import kr.ac.korea.anniversary.controller.dto.request.GuestBookCreateRequest
 import kr.ac.korea.anniversary.controller.dto.request.GuestBookUpdateRequest
 import kr.ac.korea.anniversary.controller.dto.response.GuestBookPageResponse
 import kr.ac.korea.anniversary.global.PageCommand
@@ -11,15 +10,13 @@ import kr.ac.korea.anniversary.service.GuestBookService
 import kr.ac.korea.anniversary.service.dto.command.GuestBookSearchCommand
 import org.springframework.web.bind.annotation.*
 
-@Tag(name = "방명록")
+@Tag(name = "방명록[ADMIN]")
 @RestController
 class GuestBookAdminController(
     val service: GuestBookService,
 ) {
     @GetMapping("admin/v1/guest-book/{id}")
     fun getGuestBook(
-        @Parameter(description = "{name:password} 를 base64 encoding", example = "ZGFubnk6MTIzNA==")
-        @RequestHeader("Authorization") authorization: String,
         @PathVariable id: Long,
     ): GuestBook? {
         return service.findById(id)
@@ -27,8 +24,6 @@ class GuestBookAdminController(
 
     @GetMapping("admin/v1/guest-book")
     fun getGuestBook(
-        @Parameter(description = "{name:password} 를 base64 encoding", example = "ZGFubnk6MTIzNA==")
-        @RequestHeader("Authorization") authorization: String,
         @Parameter(description = "승인받은 방명록 글만 볼 것인지, default = true", example = "1720618920")
         @RequestParam isConfirmed: Boolean?,
         @Parameter(description = "초 단위의 timestamp", example = "1720618920")
@@ -57,34 +52,17 @@ class GuestBookAdminController(
 
     @PatchMapping("admin/v1/guest-book/{id}")
     fun updateGuestBookVisibility(
-        @Parameter(description = "{name:password} 를 base64 encoding", example = "ZGFubnk6MTIzNA==")
-        @RequestHeader("Authorization") authorization: String,
+        @RequestHeader(name = "Authorization", required = true, defaultValue = "Basic ZGFubnk6MTIzNA==") authorization: String,
         @PathVariable id: Long,
         @RequestBody request: GuestBookUpdateRequest,
     ): GuestBook? {
         return service.updateConfirm(id, request.isConfirmed)
     }
 
-    @PostMapping("admin/v1/guest-book")
-    fun createGuestBook(
-        @Parameter(description = "{name:password} 를 base64 encoding", example = "ZGFubnk6MTIzNA==")
-        @RequestHeader("Authorization") authorization: String,
-        @RequestBody request: GuestBookCreateRequest,
-    ): GuestBook {
-        return service.create(
-            GuestBook(
-                id = null,
-                head = request.head,
-                content = request.content,
-                writer = request.writer,
-            ),
-        )
-    }
 
     @DeleteMapping("admin/v1/guest-book/{id}")
     fun deleteGuestBook(
-        @Parameter(description = "{name:password} 를 base64 encoding", example = "ZGFubnk6MTIzNA==")
-        @RequestHeader("Authorization") authorization: String,
+        @RequestHeader(name = "Authorization", required = true, defaultValue = "Basic ZGFubnk6MTIzNA==") authorization: String,
         @PathVariable id: Long,
     ) {
         return service.deleteById(id)

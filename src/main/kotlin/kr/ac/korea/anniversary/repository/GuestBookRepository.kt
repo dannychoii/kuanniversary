@@ -18,7 +18,7 @@ class GuestBookRepository(
 ) {
     fun findById(id: Long): GuestBook? {
         //language=sql
-        val sql = "SELECT id, head, content, is_confirmed, created_at, updated_at\nFROM guest_book\nWHERE id = ?"
+        val sql = "SELECT id, head, content, writer, is_confirmed, created_at, updated_at\nFROM guest_book\nWHERE id = ?"
         return DataAccessUtils.singleResult(
             jdbcTemplate.query(sql, { rs, _ ->
                 GuestBook(
@@ -36,7 +36,7 @@ class GuestBookRepository(
 
     fun findByIdAndIsConfirmed(id: Long, isConfirmed: Boolean): GuestBook? {
         //language=sql
-        val sql = "SELECT id, head, content, is_confirmed, created_at, updated_at\nFROM guest_book\nWHERE id = ? AND is_confirmed = ?"
+        val sql = "SELECT id, head, content, writer, is_confirmed, created_at, updated_at\nFROM guest_book\nWHERE id = ? AND is_confirmed = ?"
         return DataAccessUtils.singleResult(
             jdbcTemplate.query(sql, { rs, _ ->
                 GuestBook(
@@ -48,7 +48,7 @@ class GuestBookRepository(
                     rs.getLong(6),
                     rs.getLong(7),
                 )
-            }, id),
+            }, id, isConfirmed),
         )
     }
 
@@ -56,11 +56,11 @@ class GuestBookRepository(
         command: GuestBookSearchCommand,
         pageCommand: PageCommand,
     ): Pair<List<GuestBook>, Long> {
-        val (conditonString, preparedStatement) = getConditionStringAndPreparedStatement(command)
+        val (conditionString, preparedStatement) = getConditionStringAndPreparedStatement(command)
         // language= sql
         val sql =
-            "SELECT id, head, content, is_confirmed, created_at, updated_at FROM guest_book WHERE 1=1 $conditonString ORDER BY id ${if (pageCommand.isDesc) "DESC" else "ASC"} LIMIT ${pageCommand.pageSize} OFFSET ${pageCommand.page * pageCommand.pageSize}"
-        val countSql = "SELECT count(*) FROM guest_book WHERE 1= 1 $conditonString "
+            "SELECT id, head, content, writer, is_confirmed, created_at, updated_at FROM guest_book WHERE 1=1 $conditionString ORDER BY id ${if (pageCommand.isDesc) "DESC" else "ASC"} LIMIT ${pageCommand.pageSize} OFFSET ${pageCommand.page * pageCommand.pageSize}"
+        val countSql = "SELECT count(*) FROM guest_book WHERE 1= 1 $conditionString "
 
         val totalCount = jdbcTemplate.query(countSql, preparedStatement) { rs, _ -> rs.getLong(1) }.first()
         val resultList =
