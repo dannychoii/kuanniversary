@@ -17,7 +17,6 @@ class WebConfig : WebMvcConfigurer {
 
     override fun addCorsMappings(registry: CorsRegistry) {
         registry.addMapping("/**")
-            .allowedOriginPatterns("/info40-web/**", "**/korea.ac.kr")
-            .allowedOrigins("http://localhost:8080")
+            .allowedOrigins("http://localhost:8080", "https://info40-web.vercel.app", "https://info-40.korea.ac.kr")
     }
 }
