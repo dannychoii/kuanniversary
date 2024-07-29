@@ -13,11 +13,17 @@ class BasicAuthInterceptor : HandlerInterceptor {
     }
 
     override fun preHandle(request: HttpServletRequest, response: HttpServletResponse, handler: Any): Boolean {
-        val authorization = request.getHeader("Authorization").split(escapeSpaceRegex)[1]
-        val decoded = Base64.getDecoder().decode(authorization).toString(Charsets.UTF_8)
+        val decoded = try {
+            val authorization = request.getHeader("Authorization").split(escapeSpaceRegex)[1]
+            Base64.getDecoder().decode(authorization).toString(Charsets.UTF_8)
+        } catch (e: Exception) {
+            throw CustomException(HttpStatus.UNAUTHORIZED, "인증정보가 부정확합니다")
+        }
+
         if (decoded != AdminAuthInfo.credential) {
             throw CustomException(HttpStatus.UNAUTHORIZED, "인증정보가 부정확합니다")
         }
+
         return super.preHandle(request, response, handler)
     }
 }
