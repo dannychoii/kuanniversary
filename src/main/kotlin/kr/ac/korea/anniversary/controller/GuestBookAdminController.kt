@@ -52,7 +52,6 @@ class GuestBookAdminController(
 
     @PatchMapping("admin/v1/guest-book/{id}")
     fun updateGuestBookVisibility(
-        @RequestHeader(name = "Authorization", required = true, defaultValue = "Basic ZGFubnk6MTIzNA==") authorization: String,
         @PathVariable id: Long,
         @RequestBody request: GuestBookUpdateRequest,
     ): GuestBook? {
@@ -62,8 +61,7 @@ class GuestBookAdminController(
 
     @DeleteMapping("admin/v1/guest-book/{id}")
     fun deleteGuestBook(
-        @RequestHeader(name = "Authorization", required = true, defaultValue = "Basic ZGFubnk6MTIzNA==") authorization: String,
-        @PathVariable id: Long,
+        @PathVariable id: Long
     ) {
         return service.deleteById(id)
     }
