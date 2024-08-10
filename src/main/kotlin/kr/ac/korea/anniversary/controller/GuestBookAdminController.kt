@@ -44,8 +44,8 @@ class GuestBookAdminController(
             )
         return GuestBookPageResponse(
             guestBooks = elements,
-            page = page!!,
-            pageSize = pageSize!!,
+            page = page ?: 0,
+            pageSize = pageSize ?: 20,
             totalCount = totalCount,
         )
     }

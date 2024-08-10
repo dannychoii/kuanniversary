@@ -35,8 +35,8 @@ class PhotoController(
         val (images, count) = service.search(PageCommand(page ?: 0, pageSize ?: 20, true))
         return PhotoPageResponse(
             photos = images,
-            page = page!!,
-            pageSize = pageSize!!,
+            page = page ?: 0,
+            pageSize = pageSize ?: 20,
             totalCount = count,
         )
     }

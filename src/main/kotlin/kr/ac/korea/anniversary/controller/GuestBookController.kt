@@ -3,7 +3,6 @@ package kr.ac.korea.anniversary.controller
 import io.swagger.v3.oas.annotations.Parameter
 import io.swagger.v3.oas.annotations.tags.Tag
 import kr.ac.korea.anniversary.controller.dto.request.GuestBookCreateRequest
-import kr.ac.korea.anniversary.controller.dto.request.GuestBookUpdateRequest
 import kr.ac.korea.anniversary.controller.dto.response.GuestBookPageResponse
 import kr.ac.korea.anniversary.global.PageCommand
 import kr.ac.korea.anniversary.repository.entity.GuestBook
@@ -43,8 +42,8 @@ class GuestBookController(
             )
         return GuestBookPageResponse(
             guestBooks = elements,
-            page = page!!,
-            pageSize = pageSize!!,
+            page = page ?: 0,
+            pageSize = pageSize ?: 20,
             totalCount = totalCount,
         )
     }
