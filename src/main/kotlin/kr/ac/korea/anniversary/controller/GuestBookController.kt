@@ -2,8 +2,11 @@ package kr.ac.korea.anniversary.controller
 
 import io.swagger.v3.oas.annotations.Parameter
 import io.swagger.v3.oas.annotations.tags.Tag
+import kr.ac.korea.anniversary.controller.dto.request.GuestBookCommentAddRequest
 import kr.ac.korea.anniversary.controller.dto.request.GuestBookCreateRequest
 import kr.ac.korea.anniversary.controller.dto.response.GuestBookPageResponse
+import kr.ac.korea.anniversary.controller.dto.response.GuestBookResponse
+import kr.ac.korea.anniversary.controller.dto.response.GuestBookWithCommentResponse
 import kr.ac.korea.anniversary.global.PageCommand
 import kr.ac.korea.anniversary.repository.entity.GuestBook
 import kr.ac.korea.anniversary.service.GuestBookService
@@ -18,8 +21,11 @@ class GuestBookController(
     @GetMapping("api/v1/guest-book/{id}")
     fun getGuestBook(
         @PathVariable id: Long,
-    ): GuestBook? {
-        return service.findByIdAndIsConfirmed(id, isConfirmed = true)
+    ): GuestBookWithCommentResponse? {
+        val guestBook = service.findByIdAndIsConfirmed(id, isConfirmed = true)
+        return if (guestBook == null) null else {
+            GuestBookWithCommentResponse.from(guestBook, filterConfirmedComment = true)
+        }
     }
 
     @GetMapping("api/v1/guest-book")
@@ -41,7 +47,7 @@ class GuestBookController(
                 PageCommand(page ?: 0, pageSize ?: 20, isDesc ?: true),
             )
         return GuestBookPageResponse(
-            guestBooks = elements,
+            guestBooks = elements.map { GuestBookResponse.from(it) },
             page = page ?: 0,
             pageSize = pageSize ?: 20,
             totalCount = totalCount,
@@ -61,4 +67,12 @@ class GuestBookController(
             ),
         )
     }
+
+    @PostMapping("api/v1/guest-book/comment/add")
+    fun addComment(
+        @RequestBody request: GuestBookCommentAddRequest
+    ) {
+        service.addComment(request.guestBookId, request.content, request.writer ?: "")
+    }
+
 }

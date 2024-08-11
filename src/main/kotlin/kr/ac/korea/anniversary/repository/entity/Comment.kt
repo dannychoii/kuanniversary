@@ -4,24 +4,22 @@ import jakarta.persistence.*
 import kr.ac.korea.anniversary.helper.TimeHelper
 
 @Entity
-@Table(name = "guest_book")
-class GuestBook(
+@Table(name = "comment")
+class Comment(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     val id: Long?,
-    @Column(name = "head")
-    var head: String?,
     @Column(name = "content")
-    var content: String?,
+    var content: String,
     @Column(name = "writer")
-    var writer: String?,
+    var writer: String,
     @Column(name = "is_confirmed")
     var isConfirmed: Boolean = false,
     @Column(name = "created_at")
     var createdAt: Long = TimeHelper.nowKstTimeStamp(),
-    @Column(name = "updated_at")
-    var updatedAt: Long = TimeHelper.nowKstTimeStamp(),
-    @OneToMany(cascade = [CascadeType.ALL], orphanRemoval = true, mappedBy = "guestBook")
-    val comments: MutableList<Comment> = mutableListOf()
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name  = "guest_book_id")
+    var guestBook: GuestBook? = null
 )

@@ -2,24 +2,31 @@ package kr.ac.korea.anniversary.controller
 
 import io.swagger.v3.oas.annotations.Parameter
 import io.swagger.v3.oas.annotations.tags.Tag
+import kr.ac.korea.anniversary.controller.dto.request.GuestBookCommentUpdateRequest
 import kr.ac.korea.anniversary.controller.dto.request.GuestBookUpdateRequest
+import kr.ac.korea.anniversary.controller.dto.response.GuestBookWithCommentResponse
 import kr.ac.korea.anniversary.controller.dto.response.GuestBookPageResponse
+import kr.ac.korea.anniversary.controller.dto.response.GuestBookResponse
 import kr.ac.korea.anniversary.global.PageCommand
 import kr.ac.korea.anniversary.repository.entity.GuestBook
-import kr.ac.korea.anniversary.service.GuestBookService
+import kr.ac.korea.anniversary.service.CommentAdminService
+import kr.ac.korea.anniversary.service.GuestBookAdminService
 import kr.ac.korea.anniversary.service.dto.command.GuestBookSearchCommand
 import org.springframework.web.bind.annotation.*
 
 @Tag(name = "방명록[ADMIN]")
 @RestController
 class GuestBookAdminController(
-    val service: GuestBookService,
+    val service: GuestBookAdminService,
+    val commentService: CommentAdminService
 ) {
     @GetMapping("admin/v1/guest-book/{id}")
     fun getGuestBook(
         @PathVariable id: Long,
-    ): GuestBook? {
-        return service.findById(id)
+    ): GuestBookWithCommentResponse? {
+        return service.findById(id)?.let{
+            GuestBookWithCommentResponse.from(it)
+        }
     }
 
     @GetMapping("admin/v1/guest-book")
@@ -43,7 +50,7 @@ class GuestBookAdminController(
                 PageCommand(page ?: 0, pageSize ?: 20, isDesc ?: true),
             )
         return GuestBookPageResponse(
-            guestBooks = elements,
+            guestBooks = elements.map { GuestBookResponse.from(it) },
             page = page ?: 0,
             pageSize = pageSize ?: 20,
             totalCount = totalCount,
@@ -58,11 +65,25 @@ class GuestBookAdminController(
         return service.updateConfirm(id, request.isConfirmed)
     }
 
-
     @DeleteMapping("admin/v1/guest-book/{id}")
     fun deleteGuestBook(
         @PathVariable id: Long
     ) {
         return service.deleteById(id)
+    }
+
+    @PatchMapping("admin/v1/guest-book/comment{id}")
+    fun updateIsConfirmed(
+        @PathVariable id:Long,
+        @RequestBody request: GuestBookCommentUpdateRequest
+    ){
+        commentService.updateIsConfirmed(id, request.isConfirmed)
+    }
+
+    @DeleteMapping("admin/v1/guest-book/comment{id}")
+    fun deleteComment(
+        @PathVariable id: Long
+    ){
+        commentService.deleteById(id)
     }
 }
