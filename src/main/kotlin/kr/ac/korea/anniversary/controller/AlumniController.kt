@@ -20,7 +20,7 @@ class AlumniController(
         return service.register(request)
     }
 
-    @GetMapping("api/v1/alumni")
+    @GetMapping("api/v1/alumni/count")
     fun countTotalRegistered():Int{
         return service.countTotalRegistered()
     }
