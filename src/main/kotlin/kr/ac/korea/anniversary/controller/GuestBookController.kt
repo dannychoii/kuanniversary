@@ -11,6 +11,7 @@ import kr.ac.korea.anniversary.global.PageCommand
 import kr.ac.korea.anniversary.repository.entity.GuestBook
 import kr.ac.korea.anniversary.service.GuestBookService
 import kr.ac.korea.anniversary.service.dto.command.GuestBookSearchCommand
+import org.slf4j.LoggerFactory
 import org.springframework.web.bind.annotation.*
 
 @Tag(name = "방명록")
@@ -18,6 +19,7 @@ import org.springframework.web.bind.annotation.*
 class GuestBookController(
     val service: GuestBookService,
 ) {
+    private val logger = LoggerFactory.getLogger(GuestBookController::class.java)
     @GetMapping("api/v1/guest-book/{id}")
     fun getGuestBook(
         @PathVariable id: Long,
@@ -41,6 +43,7 @@ class GuestBookController(
         @Parameter(description = "default=true")
         @RequestParam isDesc: Boolean?,
     ): GuestBookPageResponse {
+
         val (elements, totalCount) =
             service.search(
                 GuestBookSearchCommand(true, fromTs, toTs),
@@ -58,6 +61,7 @@ class GuestBookController(
     fun createGuestBook(
         @RequestBody request: GuestBookCreateRequest,
     ): GuestBook {
+        logger.info("[createGuestBook]" + request.toString())
         return service.create(
             GuestBook(
                 id = null,
