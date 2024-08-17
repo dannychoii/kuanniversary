@@ -17,7 +17,7 @@ class Alumni(
     @Column(name = "is_male")
     val isMale: Boolean,
     @Column(name = "student_id")
-    val studentId: Int,
+    val studentId: String,
     @Column(name = "email")
     val email: String,
     @Column(name = "company")

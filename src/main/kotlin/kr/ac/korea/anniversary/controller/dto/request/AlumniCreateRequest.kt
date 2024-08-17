@@ -4,7 +4,7 @@ data class AlumniCreateRequest(
     val name: String,
     val phoneNumber: String,
     val isMale: Boolean,
-    val studentId: Int,
+    val studentId: String,
     val email: String,
     val company: String
 )
