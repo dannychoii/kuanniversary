@@ -8,7 +8,7 @@ interface GuestBookJpaRepository : Repository<GuestBook, Long> {
 
     fun findById(id: Long): GuestBook?
 
-    @Query(value = "select distinct g from GuestBook g join fetch g.comments WHERE g.id = ?1 AND g.isConfirmed = ?2")
+    @Query(value = "select distinct g from GuestBook g left join fetch g.comments WHERE g.id = ?1 AND g.isConfirmed = ?2")
     fun find(id: Long, isConfirmed: Boolean): GuestBook?
 
     fun save(guestBook: GuestBook): GuestBook
